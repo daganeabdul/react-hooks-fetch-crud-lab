@@ -3,9 +3,24 @@ import QuestionItem from "./QuestionItem";
 
 function QuestionList({ questions, setQuestions, onDelete, onUpdate }) {
   useEffect(() => {
+    let isMounted = true;
+
     fetch("http://localhost:4000/questions")
       .then((res) => res.json())
-      .then((data) => setQuestions(data));
+      .then((data) => {
+        if (isMounted) {
+          setQuestions(data);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          console.error("Failed to fetch questions:", err);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [setQuestions]);
 
   return (
