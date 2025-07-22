@@ -1,10 +1,13 @@
 module.exports = {
     transform: {
-      "^.+\\.[jt]sx?$": "babel-jest"
+      "^.+\\.jsx?$": "babel-jest",
     },
     transformIgnorePatterns: [
-      "/node_modules/(?!(YOUR_PACKAGE_HERE|@adobe/css-tools)/)"
+      "/node_modules/(?!(\\@adobe\\/css-tools)/)", 
     ],
-    testEnvironment: "jsdom"
+    moduleNameMapper: {
+      "\\.(css|less)$": "identity-obj-proxy",
+    },
+    testEnvironment: "jsdom",
   };
   

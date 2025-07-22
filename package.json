@@ -17,6 +17,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.1.10",
     "babel-jest": "^30.0.5",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
     "mocha": "^8.2.1",
     "msw": "^0.24.2"
