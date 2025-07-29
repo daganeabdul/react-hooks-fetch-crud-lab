@@ -5,25 +5,36 @@ function QuestionForm({ onAddQuestion }) {
   const [answers, setAnswers] = useState(["", "", "", ""]);
   const [correctIndex, setCorrectIndex] = useState(0);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    const newQuestion = {
-      prompt,
-      answers,
-      correctIndex: parseInt(correctIndex),
-    };
-    onAddQuestion(newQuestion);
-
-    // Reset form
-    setPrompt("");
-    setAnswers(["", "", "", ""]);
-    setCorrectIndex(0);
-  }
-
   function handleAnswerChange(index, value) {
     const updatedAnswers = [...answers];
     updatedAnswers[index] = value;
     setAnswers(updatedAnswers);
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const newQuestion = {
+      prompt,
+      answers,
+      correctIndex: parseInt(correctIndex, 10),
+    };
+
+    fetch("http://localhost:4000/questions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newQuestion),
+    })
+      .then((res) => res.json())
+      .then((newQuestion) => {
+        onAddQuestion(newQuestion);
+        // Reset form
+        setPrompt("");
+        setAnswers(["", "", "", ""]);
+        setCorrectIndex(0);
+      });
   }
 
   return (
@@ -38,7 +49,9 @@ function QuestionForm({ onAddQuestion }) {
             onChange={(e) => setPrompt(e.target.value)}
           />
         </label>
-
+        <label>
+          Answers:
+        </label>
         {answers.map((answer, index) => (
           <label key={index}>
             Answer {index + 1}:
@@ -49,7 +62,6 @@ function QuestionForm({ onAddQuestion }) {
             />
           </label>
         ))}
-
         <label>
           Correct Answer:
           <select
@@ -63,8 +75,6 @@ function QuestionForm({ onAddQuestion }) {
             ))}
           </select>
         </label>
-
-        {/* ✅ Crucial: type must be submit for test to work */}
         <button type="submit">Add Question</button>
       </form>
     </section>

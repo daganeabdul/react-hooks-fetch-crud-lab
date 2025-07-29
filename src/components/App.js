@@ -4,7 +4,9 @@ import QuestionList from "./QuestionList";
 
 function App() {
   const [questions, setQuestions] = useState([]);
-  const [page, setPage] = useState("list");
+
+  const [showForm, setShowForm] = useState(false);
+
 
   useEffect(() => {
     fetch("http://localhost:4000/questions")
@@ -14,13 +16,9 @@ function App() {
 
   function handleAddQuestion(newQuestion) {
     setQuestions([...questions, newQuestion]);
-  }
 
-  function handleDeleteQuestion(deletedId) {
-    const updatedQuestions = questions.filter(
-      (question) => question.id !== deletedId
-    );
-    setQuestions(updatedQuestions);
+    setShowForm(false);
+
   }
 
   function handleUpdateQuestion(updatedQuestion) {
@@ -30,22 +28,34 @@ function App() {
     setQuestions(updatedQuestions);
   }
 
+ 
+  
+
+  function handleDeleteQuestion(deletedQuestion) {
+    const updatedQuestions = questions.filter((q) => q.id !== deletedQuestion.id);
+    setQuestions(updatedQuestions);
+  }
+
   return (
-    <main>
+    <section>
+      <h1>Quiz Questions</h1>
       <nav>
-        <button onClick={() => setPage("form")}>New Question</button>
-        <button onClick={() => setPage("list")}>View Questions</button>
+        <button onClick={() => setShowForm(true)}>New Question</button>
+        <button onClick={() => setShowForm(false)}>View Questions</button>
       </nav>
-      {page === "form" ? (
+      {showForm ? (
+
         <QuestionForm onAddQuestion={handleAddQuestion} />
       ) : (
         <QuestionList
           questions={questions}
-          onDeleteQuestion={handleDeleteQuestion}
+
           onUpdateQuestion={handleUpdateQuestion}
+          onDeleteQuestion={handleDeleteQuestion}
         />
       )}
-    </main>
+    </section>
+
   );
 }
 

@@ -1,30 +1,30 @@
 import React, { useState } from "react";
 
-function QuestionItem({ question, onDeleteQuestion, onUpdateAnswer }) {
+function QuestionItem({ question, onUpdateQuestion, onDeleteQuestion }) {
   const { id, prompt, answers, correctIndex } = question;
   const [selectedIndex, setSelectedIndex] = useState(correctIndex);
 
-  function handleChange(e) {
-    const newIndex = parseInt(e.target.value);
-    setSelectedIndex(newIndex);
+  function handleChange(event) {
+    const newCorrectIndex = parseInt(event.target.value, 10);
+    setSelectedIndex(newCorrectIndex);
 
     fetch(`http://localhost:4000/questions/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        correctIndex: newIndex,
-      }),
+      body: JSON.stringify({ correctIndex: newCorrectIndex }),
     })
-      .then((r) => r.json())
-      .then((updatedQuestion) => onUpdateAnswer(updatedQuestion));
+      .then((res) => res.json())
+      .then((updatedQuestion) => {
+        onUpdateQuestion(updatedQuestion);
+      });
   }
 
   function handleDelete() {
     fetch(`http://localhost:4000/questions/${id}`, {
       method: "DELETE",
-    }).then(() => onDeleteQuestion(id));
+    }).then(() => onDeleteQuestion(question));
   }
 
   return (
