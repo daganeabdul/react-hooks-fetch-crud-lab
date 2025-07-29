@@ -1,38 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import QuestionItem from "./QuestionItem";
 
-function QuestionList({ questions, setQuestions, onDelete, onUpdate }) {
-  useEffect(() => {
-    let isMounted = true;
-
-    fetch("http://localhost:4000/questions")
-      .then((res) => res.json())
-      .then((data) => {
-        if (isMounted) {
-          setQuestions(data);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          console.error("Failed to fetch questions:", err);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [setQuestions]);
-
+function QuestionList({ questions, onUpdateQuestion, onDeleteQuestion }) {
   return (
     <section>
-      <h1>Quiz Questions</h1>
+      <h2>Questions</h2>
       <ul>
         {questions.map((question) => (
           <QuestionItem
             key={question.id}
             question={question}
-            onDelete={onDelete}
-            onUpdate={onUpdate}
+            onUpdateQuestion={onUpdateQuestion}
+            onDeleteQuestion={onDeleteQuestion}
           />
         ))}
       </ul>

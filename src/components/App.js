@@ -1,41 +1,53 @@
-import React, { useState } from "react";
-import AdminNavBar from "./AdminNavBar";
+import React, { useEffect, useState } from "react";
 import QuestionForm from "./QuestionForm";
 import QuestionList from "./QuestionList";
 
 function App() {
-  const [page, setPage] = useState("List");
   const [questions, setQuestions] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    fetch("http://localhost:4000/questions")
+      .then((res) => res.json())
+      .then((data) => setQuestions(data));
+  }, []);
 
   function handleAddQuestion(newQuestion) {
     setQuestions([...questions, newQuestion]);
+    setShowForm(false);
   }
 
-  function handleDeleteQuestion(deletedId) {
-    setQuestions(questions.filter((q) => q.id !== deletedId));
-  }
-
-  function handleUpdateCorrectAnswer(updatedQuestion) {
-    const updatedList = questions.map((q) =>
+  function handleUpdateQuestion(updatedQuestion) {
+    const updatedQuestions = questions.map((q) =>
       q.id === updatedQuestion.id ? updatedQuestion : q
     );
-    setQuestions(updatedList);
+    setQuestions(updatedQuestions);
+  }
+ 
+  
+
+  function handleDeleteQuestion(deletedQuestion) {
+    const updatedQuestions = questions.filter((q) => q.id !== deletedQuestion.id);
+    setQuestions(updatedQuestions);
   }
 
   return (
-    <main>
-      <AdminNavBar onChangePage={setPage} />
-      {page === "Form" ? (
+    <section>
+      <h1>Quiz Questions</h1>
+      <nav>
+        <button onClick={() => setShowForm(true)}>New Question</button>
+        <button onClick={() => setShowForm(false)}>View Questions</button>
+      </nav>
+      {showForm ? (
         <QuestionForm onAddQuestion={handleAddQuestion} />
       ) : (
         <QuestionList
           questions={questions}
-          setQuestions={setQuestions}
-          onDelete={handleDeleteQuestion}
-          onUpdate={handleUpdateCorrectAnswer}
+          onUpdateQuestion={handleUpdateQuestion}
+          onDeleteQuestion={handleDeleteQuestion}
         />
       )}
-    </main>
+    </section>
   );
 }
 
